@@ -1,18 +1,20 @@
 <script>
+    // Imports and Astro exports
     import { onMount } from 'svelte';
     import { userUuid } from "../stores/stores.js";
-
     import UpvoteCard from "./UpvoteCard.svelte";
     import UserCard from "./UserCard.svelte";
     import Backbutton from "./Backbutton.svelte";
     import DateCard from "./DateCard.svelte";
     import InfiniteScroll from './InfiniteScroll.svelte';
-
     export let question_id;
     export let course_id;
 
+    // The answer body for creating answers
     let answer_body = '';
 
+    // The question and answers for the page, fetched from qa-api
+    let answers = [];
     let question = {
         title: '',
         body: '',
@@ -22,18 +24,20 @@
         upvotes: 0
     };
     
-    let answers = [];
-
+    // Pagination for infinite scrolling functionality. Each page is <= 20 questions
     let page = 1;
     let loading = false;
 
+    // When mounted, we set initially page to 1, fetch the question and answers and set a time interval for short polling
     onMount(() => {
         page = 1;
-        fetchAnswers();
+        fetchQuestionAndAnswers();
         setInterval(fetchAnswerUpdates, 30000);
     });
 
-    const fetchAnswers = async () => {
+    // Fetch the question details and max 20 answers
+    // Send a GET request to endpoint with user_uuid to get the has_upvoted status
+    const fetchQuestionAndAnswers = async () => {
         try {
             const response = await fetch(`/api/courses/${course_id}/questions/${question_id}/answers`, {
                 headers: {
@@ -60,7 +64,8 @@
         }
     };
 
-
+    // Fetch newly created answers. 
+    // Send a GET request to endpoint with the latest-date timestamp, fetching answers created after this date.
     const fetchAnswerUpdates = async () => {
         try {
             let latest_date = (answers.length > 0) ? answers[0].last_activity : '1900-01-01T00:00:00Z';
@@ -77,6 +82,8 @@
         }
     }
 
+    // Fetch the next page of answers for infinite scrolling functionality.
+    // Send a GET request with the next page number to endpoint. Add the returned answers to the end of the answers list.
     const fetchNextPageAnswers = async () => {
         try {
             if(!loading && answers.length === (20 * page)) {
@@ -99,6 +106,8 @@
         }
     }
 
+    // Create a new answer.
+    // Send a POST request with the question id, answer body and user_uuid to endpoint.
     const submitAnswer = async () => {
         try {
             if (answer_body.trim() !== '') {
@@ -132,7 +141,9 @@
     };
 </script>
 
-<!-- AnswerList contain the question body and a list of answers -->
+
+
+<!-- AnswerList contain the question details, answer creation form and a list of answers -->
 <div class="flex items-center m-4 mb-4">
     <Backbutton path={`/courses/${course_id}`}/>
     <span class="mx-2 text-lg">{question.title}</span>

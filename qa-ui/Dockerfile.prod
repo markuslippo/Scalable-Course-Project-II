@@ -1,3 +1,5 @@
+# The production configuration for the UI would be here. Instead of astro dev we would use build files. 
+
 FROM node:lts-alpine3.17
 
 EXPOSE 3000

@@ -1,12 +1,17 @@
 <script>
+    // Imports
     import { onMount } from 'svelte';
     
+    // The course list
     let courses = [];
 
+    // When mounted, fill the course list with data from backend
     onMount(async () => {
         courses = await fetchCourses();
     });
 
+    // Fetch data from the backend.
+    // Send a GET request to endpoint.
     const fetchCourses = async () => {
         try {
             const response = await fetch("/api/courses");
@@ -20,7 +25,7 @@
     };
 </script>
 
-<!-- Course list element -->
+<!-- Course list contains boxes for each course, 2 boxes per row -->
 {#if courses.length > 0}
     <h1 class="text-4xl text-left mt-10 mb-5 mx-8 font-bold text-white">Courses:</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 py-2">

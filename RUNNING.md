@@ -1,3 +1,19 @@
-TODO: The RUNNING.md outlines steps needed to run the application separately for the development mode and the production mode.
+# Running instructions
 
-TODO: For merits, the RUNNING.md also outlines the steps needed to use Kubernetes to run the application with Minikube (or somilar), using kubernetes configuration files created as parts of the passing with merits requirements
+First, 
+  -  cd qa-ui
+  -  npm install
+
+
+Then to run in development mode:
+  -   docker compose up
+
+Or production mode:
+  -  docker compose --profile migrate --profile pgadmin -f docker-compose.prod.yml up
+
+
+Then, on the browser, navigate to    http://localhost:7800
+
+
+To run tests on a running development mode:
+  -  docker compose run --rm --entrypoint npx e2e-playwright playwright test

@@ -1,4 +1,5 @@
 <script>
+    // Component export
     export let user_uuid;
 </script>
 

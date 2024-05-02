@@ -1,43 +1,33 @@
 <script>
+    // Imports and Astro exports
     import { onMount } from 'svelte';
     import { userUuid } from "../stores/stores.js";
     import Backbutton from './Backbutton.svelte';
     import InfiniteScroll from './InfiniteScroll.svelte';
     import UpvoteCard from "./UpvoteCard.svelte";
-
     export let course_id;
-    let questions = [];
-    let course = {};
 
+    // The title and body for creating new questions
     let title = '';
     let body = '';
 
+    // The course name and questions, fetched from qa-api
+    let questions = [];
+    let course = {};
+
+    // Pagination for infinite scrolling functionality. Each page is <= 20 questions
     let page = 1;
     let loading = false;
 
+    // When mounted, we set initially page to 1, fetch the questions and set a time interval for short polling
     onMount(() => {
         page = 1;
         fetchCourseQuestions();
         setInterval(fetchQuestionUpdates, 30000);
     });
 
-
-    const fetchQuestionUpdates = async () => {
-        try {
-            let latest_date = (questions.length > 0) ? questions[0].last_activity : '1900-01-01T00:00:00Z';
-            const response = await fetch(`/api/courses/${course_id}/questions/updates`, {
-                headers: {
-                    "latest-date": latest_date, 
-                },
-            });
-            const new_questions = await response.json();
-            questions = [...new_questions, ...questions];
-            questions = questions.slice(0, 20 * page);
-        } catch (error) {
-            console.error('An error occured when trying to check for updates')
-        }
-    }
-
+    // Fetch max 20 questions.
+    // Send a GET request to endpoint with user_uuid to get the has_upvoted status
     const fetchCourseQuestions = async () => {
         try {
             const response = await fetch(`/api/courses/${course_id}/questions`, { 
@@ -56,6 +46,26 @@
         }
     };
 
+    // Fetch newly created questions. 
+    // Send a GET request to endpoint with the latest-date timestamp, fetching questions created after this date.
+    const fetchQuestionUpdates = async () => {
+        try {
+            let latest_date = (questions.length > 0) ? questions[0].last_activity : '1900-01-01T00:00:00Z';
+            const response = await fetch(`/api/courses/${course_id}/questions/updates`, {
+                headers: {
+                    "latest-date": latest_date, 
+                },
+            });
+            const new_questions = await response.json();
+            questions = [...new_questions, ...questions];
+            questions = questions.slice(0, 20 * page);
+        } catch (error) {
+            console.error('An error occured when trying to check for updates')
+        }
+    }
+
+    // Fetch the next page of questions for infinite scrolling functionality.
+    // Send a GET request with the next page number to endpoint. Add the returned questions to the end of the questions list.
     const fetchNextPageQuestions = async () => {
         try {
             if(!loading && questions.length === (20 * page)) {
@@ -78,6 +88,9 @@
         }
     }
 
+
+    // Create a new question.
+    // Send a POST request with the course id, title, body and user_uuid to endpoint.
     const submitCourseQuestion = async () => {
         if (body.trim() !== '' && title.trim() !== '') {
             const payload = {
@@ -113,7 +126,7 @@
     };
 </script>
 
-<!-- QuestionList contains a table with the question title, answers and upvotes -->
+<!-- QuestionList contains a table with the question title, user_uuid, date and  upvotes -->
 <div class="flex items-center m-4 mb-4">
     <Backbutton path={`/`}/>
     <span class="mx-2 text-lg">{course.course_title}</span>

@@ -1,10 +1,15 @@
 <script>
+    // Imports and component exports
     import { userUuid } from "../stores/stores.js";
     export let upvotes;
     export let has_upvoted;
     export let is_question;
     export let id;
 
+    // Upvoting applies to questions and answers.
+    // The path endpoint is either for questions or for answers.
+    // If the user has not upvoted, we send the user_uuid with a POST request to the endpoint.
+    // This component is disabled if the user has already upvoted.
     const upvote = async() => {
         try {
             if (!has_upvoted) {
