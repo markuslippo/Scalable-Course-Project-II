@@ -1,0 +1,10 @@
+---
+import Layout from '../layout/Layout.astro';
+import CourseList from '../components/CourseList.svelte';
+---
+
+<Layout>
+  <div class="container mx-auto my-5">
+    <CourseList client:only={"svelte"} />
+  </div>
+</Layout>

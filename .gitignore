@@ -1,0 +1,15 @@
+app-cache
+
+production-database-data
+project.env
+
+qa-ui/.vscode
+qa-ui/package-lock.json
+qa-ui/dist/
+qa-ui/.astro/
+qa-ui/node_modules/
+qa-ui/npm-debug.log*
+qa-ui/yarn-debug.log*
+qa-ui/yarn-error.log*
+qa-ui/pnpm-debug.log*
+

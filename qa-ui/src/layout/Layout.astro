@@ -1,0 +1,24 @@
+---
+import Header from "./Header.svelte";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Questions and answers</title>
+  </head>
+
+ 
+  <body class="bg-[#17181c] text-[#d0d0d0] flex flex-col min-h-screen font-sans-serif">
+    <Header client:only={"svelte"} />
+    <div class="flex flex-col min-h-screen">
+      <div class="flex-grow mx-auto w-full max-w-3xl border-x border-gray-700">
+        <slot />
+      </div>
+    </div>
+  </body>
+
+  </html>

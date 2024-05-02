@@ -1,0 +1,16 @@
+---
+import Layout from '../../../../layout/Layout.astro';
+import AnswerList from '../../../../components/AnswerList.svelte';
+const { course_id, question_id } = Astro.params;
+
+---
+
+<Layout>
+    <div class="text-[#d0d0d0]">
+        {question_id ? (
+            <AnswerList question_id={question_id} course_id={course_id} client:only={"svelte"} />
+        ) : (
+            <p>Question not found. <a href={`/courses/${course_id}`} class="hover:underline">Return to course</a></p>
+        )}
+    </div>
+</Layout>
